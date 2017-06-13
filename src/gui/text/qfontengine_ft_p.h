@@ -62,7 +62,9 @@
 #include <private/qt_x11_p.h>
 #endif
 
-#include <unistd.h>
+#ifndef Q_OS_WIN
+#  include <unistd.h>
+#endif
 
 #ifndef QT_NO_FONTCONFIG
 #include <fontconfig/fontconfig.h>

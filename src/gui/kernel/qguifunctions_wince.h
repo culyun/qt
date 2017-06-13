@@ -124,6 +124,14 @@ typedef struct tagTTPOLYCURVE
 #define TT_PRIM_CSPLINE 3
 #define ANSI_VAR_FONT 12
 
+#ifndef DEVICE_FONTTYPE
+#define DEVICE_FONTTYPE 0x0002
+#endif
+
+#ifndef RASTER_FONTTYPE
+#define RASTER_FONTTYPE 0x0001
+#endif
+
 HINSTANCE qt_wince_ShellExecute(HWND hwnd, LPCWSTR operation, LPCWSTR file, LPCWSTR params, LPCWSTR dir, int showCmd);
 #define ShellExecute(a,b,c,d,e,f) qt_wince_ShellExecute(a,b,c,d,e,f)
 

@@ -929,7 +929,7 @@ void QTextEngine::shapeText(int item) const
         shapeTextMac(item);
     }
 #endif
-#elif defined(Q_WS_WINCE)
+#elif defined(Q_WS_WINCE) && !defined(QT_WIN_FREETYPE)
     shapeTextWithCE(item);
 #else
     shapeTextWithHarfbuzz(item);
@@ -991,7 +991,7 @@ static inline bool hasCaseChange(const QScriptItem &si)
            si.analysis.flags == QScriptAnalysis::Lowercase;
 }
 
-#if defined(Q_WS_WINCE) //TODO
+#if defined(Q_WS_WINCE) && !defined(QT_WIN_FREETYPE) //TODO
 // set the glyph attributes heuristically. Assumes a 1 to 1 relationship between chars and glyphs
 // and no reordering.
 // also computes logClusters heuristically

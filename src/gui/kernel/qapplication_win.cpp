@@ -194,6 +194,22 @@ typedef struct tagTOUCHINPUT
 #endif
 QT_BEGIN_NAMESPACE
 
+#ifndef QT_NO_THREAD
+Q_GLOBAL_STATIC(QThreadStorage<QtHDC *>, local_shared_dc)
+HDC shared_dc()
+{
+    QtHDC *&hdc = local_shared_dc()->localData();
+    if (!hdc)
+        hdc = new QtHDC;
+    return hdc->hdc();
+}
+#else
+HDC shared_dc()
+{
+    return 0;
+}
+#endif
+
 #ifdef Q_WS_WINCE
 #ifndef SHRG_RETURNCMD
 struct SHRGINFO {
@@ -499,7 +515,22 @@ public:
 // need to get default font?
 extern bool qt_app_has_font;
 
-extern QFont qt_LOGFONTtoQFont(LOGFONT& lf,bool scale);
+extern QFont::Weight weightFromInteger(int weight); // qfontdatabase.cpp
+
+QFont qt_LOGFONTtoQFont(LOGFONT& lf, bool /*scale*/)
+{
+    QString family = QString::fromWCharArray(lf.lfFaceName);
+    QFont qf(family);
+    qf.setItalic(lf.lfItalic);
+    if (lf.lfWeight != FW_DONTCARE)
+        qf.setWeight(weightFromInteger(lf.lfWeight));
+    int lfh = qAbs(lf.lfHeight);
+    qf.setPointSizeF(lfh * 72.0 / GetDeviceCaps(shared_dc(),LOGPIXELSY));
+    qf.setUnderline(false);
+    qf.setOverline(false);
+    qf.setStrikeOut(false);
+    return qf;
+}
 
 static void qt_set_windows_color_resources()
 {

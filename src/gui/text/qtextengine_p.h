@@ -636,7 +636,7 @@ private:
     void addRequiredBoundaries() const;
     void shapeText(int item) const;
     void shapeTextWithHarfbuzz(int item) const;
-#if defined(Q_WS_WINCE)
+#if defined(Q_WS_WINCE) && !defined(QT_WIN_FREETYPE)
     void shapeTextWithCE(int item) const;
 #endif
 #if defined(Q_WS_MAC)

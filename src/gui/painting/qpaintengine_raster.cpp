@@ -79,7 +79,11 @@
 #if defined(Q_WS_WIN)
 #  include <qt_windows.h>
 #  include <qvarlengtharray.h>
-#  include <private/qfontengine_p.h>
+#  if defined(QT_WIN_FREETYPE)
+#    include <private/qfontengine_ft_p.h>
+#  else
+#    include <private/qfontengine_p.h>
+#  endif
 #  if defined(Q_OS_WINCE)
 #    include "qguifunctions_wince.h"
 #  endif
@@ -3421,7 +3425,7 @@ bool QRasterPaintEngine::supportsTransformations(const QFontEngine *fontEngine) 
     if (!state()->WxF)
         return false;
     const QTransform &m = state()->matrix;
-#if defined(Q_WS_WIN) && !defined(Q_WS_WINCE)
+#if defined(Q_WS_WIN) && !defined(Q_WS_WINCE) && !defined(QT_WIN_FREETYPE)
     QFontEngine::Type fontEngineType = fontEngine->type();
     if ((fontEngineType == QFontEngine::Win && !((QFontEngineWin *) fontEngine)->ttf && m.type() > QTransform::TxTranslate)
         || (m.type() <= QTransform::TxTranslate

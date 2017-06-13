@@ -88,46 +88,9 @@
     ((quint32)(ch1)) \
    )
 
-// common DC for all fonts
-
 QT_BEGIN_NAMESPACE
 
-class QtHDC
-{
-    HDC _hdc;
-public:
-    QtHDC()
-    {
-        HDC displayDC = GetDC(0);
-        _hdc = CreateCompatibleDC(displayDC);
-        ReleaseDC(0, displayDC);
-    }
-    ~QtHDC()
-    {
-        if (_hdc)
-            DeleteDC(_hdc);
-    }
-    HDC hdc() const
-    {
-        return _hdc;
-    }
-};
-
-#ifndef QT_NO_THREAD
-Q_GLOBAL_STATIC(QThreadStorage<QtHDC *>, local_shared_dc)
-HDC shared_dc()
-{
-    QtHDC *&hdc = local_shared_dc()->localData();
-    if (!hdc)
-        hdc = new QtHDC;
-    return hdc->hdc();
-}
-#else
-HDC shared_dc()
-{
-    return 0;
-}
-#endif
+extern HDC   shared_dc();                // common dc for all fonts
 
 #ifndef Q_WS_WINCE
 typedef BOOL (WINAPI *PtrGetCharWidthI)(HDC, UINT, UINT, LPWORD, LPINT);

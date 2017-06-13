@@ -82,7 +82,40 @@
 #include "QtGui/qplatformintegration_qpa.h"
 #endif
 
+#if defined (Q_OS_WIN32) || defined(Q_OS_WINCE)
+#  include "QtCore/qthreadstorage.h"
+#endif
+
 QT_BEGIN_NAMESPACE
+
+#if defined (Q_OS_WIN32) || defined(Q_OS_WINCE)
+
+// common DC for all fonts
+
+class QtHDC
+{
+    HDC _hdc;
+public:
+    QtHDC()
+    {
+        HDC displayDC = GetDC(0);
+        _hdc = CreateCompatibleDC(displayDC);
+        ReleaseDC(0, displayDC);
+    }
+    ~QtHDC()
+    {
+        if (_hdc)
+            DeleteDC(_hdc);
+    }
+    HDC hdc() const
+    {
+        return _hdc;
+    }
+};
+
+HDC shared_dc();
+
+#endif
 
 class QClipboard;
 class QGraphicsScene;

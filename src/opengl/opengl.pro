@@ -125,6 +125,16 @@ mac:!qpa {
                          qglpixelbuffer_mac.mm
     LIBS_PRIVATE += -framework AppKit -framework Carbon
 }
+
+win* {
+    contains(QT_CONFIG, freetype) {
+        DEFINES += QT_NO_FONTCONFIG
+        INCLUDEPATH += \
+            ../3rdparty/freetype/src \
+            ../3rdparty/freetype/include
+    }
+}
+
 win32:!wince*: {
     DEFINES += QT_NO_EGL
     SOURCES += qgl_win.cpp \

@@ -243,6 +243,7 @@ error:
 }
 
 extern QFont::Weight weightFromInteger(int weight); // qfontdatabase.cpp
+extern HDC   shared_dc();                // common dc for all fonts
 
 static
 void addFontToDatabase(QString familyName, const QString &scriptName,

@@ -1936,7 +1936,7 @@ void QPdfBaseEnginePrivate::drawTextItem(const QPointF &p, const QTextItemInt &t
         currentPage->fonts.append(font->object_id);
 
     qreal size = ti.fontEngine->fontDef.pixelSize;
-#ifdef Q_WS_WIN
+#if defined(Q_WS_WIN) && !defined(QT_WIN_FREETYPE)
     if (ti.fontEngine->type() == QFontEngine::Win) {
         QFontEngineWin *fe = static_cast<QFontEngineWin *>(ti.fontEngine);
         size = fe->tm.tmHeight;

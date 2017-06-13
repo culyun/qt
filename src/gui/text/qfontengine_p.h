@@ -444,8 +444,12 @@ public:
 
 QT_END_NAMESPACE
 
-#ifdef Q_WS_WIN
-#   include "private/qfontengine_win_p.h"
+#if defined(Q_WS_WIN)
+#  if defined(QT_WIN_FREETYPE)
+#    include "private/qfontengine_ft_p.h"
+#  else
+#    include "private/qfontengine_win_p.h"
+#  endif
 #endif
 
 #if defined(Q_OS_SYMBIAN) && !defined(QT_NO_FREETYPE)

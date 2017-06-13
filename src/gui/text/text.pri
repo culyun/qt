@@ -77,7 +77,7 @@ SOURCES += \
         text/qrawfont.cpp \
     text/qglyphrun.cpp
 
-win32 {
+win32:!contains(QT_CONFIG, freetype) {
 	SOURCES += \
 		text/qfont_win.cpp \
                 text/qfontengine_win.cpp \
@@ -222,7 +222,27 @@ contains(QT_CONFIG, freetype) {
     symbian {
         SOURCES += \
             ../3rdparty/freetype/src/base/ftsystem.c
-    } else {
+    }
+
+    win* {
+        DEFINES *= QT_NO_FONTCONFIG
+        DEFINES -= QT_NO_FREETYPE
+        DEFINES *= QT_WIN_FREETYPE
+
+        SOURCES += \
+            ../3rdparty/freetype/src/base/ftsystem.c \
+            text/qfont_win_ft.cpp \
+            text/qfontengine_ft.cpp \
+            text/qrawfont_ft.cpp \
+            text/qfontdatabase_win_ft.cpp
+
+        contains(QT_CONFIG, system-zlib) {
+             DEFINES += FT_CONFIG_OPTION_SYSTEM_ZLIB
+        }
+
+    }
+
+    !symbian:!win* {
         SOURCES += \
             ../3rdparty/freetype/builds/unix/ftsystem.c
         INCLUDEPATH += \
@@ -233,7 +253,8 @@ contains(QT_CONFIG, freetype) {
 	../3rdparty/freetype/src \
 	../3rdparty/freetype/include
 
-    DEFINES += FT2_BUILD_LIBRARY FT_CONFIG_OPTION_SYSTEM_ZLIB
+    DEFINES += FT2_BUILD_LIBRARY
+    !win*:DEFINES += FT_CONFIG_OPTION_SYSTEM_ZLIB
     
     embedded:CONFIG += opentype
 } else:contains(QT_CONFIG, system-freetype) {
