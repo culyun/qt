@@ -172,7 +172,25 @@ namespace JSC {
         void operator delete[](void*);
 
         void* operator new(size_t, void*);
+
+#if !(defined(_MSC_VER) && (_MSC_VER >= 1900))
+
         void operator delete(void*, size_t);
+
+		// Microsoft's documentation for VS2015 (_MSC_VER == 1900)
+		//   https://msdn.microsoft.com/en-us/library/kftdy56f(v=vs.140).aspx
+		// says:
+		//   "Only one of the preceding two forms [of delete operators] can be present for a given class."
+		//
+		// This differs from C++ reference.com
+		//   http://en.cppreference.com/w/cpp/memory/new/operator_delete
+		// which says:
+		//   "If both forms [size aware and size-unaware] are defined, the size-unaware version is called."
+		//
+		// Since the point of these new and delete overloads seems to be to prevent usage at compile time (they're not even defined),
+		// this is a somewhat moot point. But it means that we need to guard this declaration to keep MSVC happy
+
+#endif
     };
 
     class ArgList {

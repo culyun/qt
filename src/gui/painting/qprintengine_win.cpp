@@ -346,9 +346,9 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
                     || d->txop >= QTransform::TxProject
                     || ti.fontEngine->type() != QFontEngine::Win;
 
-
+#if !defined(QT_WIN_FREETYPE)
     if (!fallBack) {
-        QFontEngineWin *fe = static_cast<QFontEngineWin *>(ti.fontEngine);
+        QFontEngineWin *fe = reinterpret_cast<QFontEngineWin *>(ti.fontEngine);
 
         // Try selecting the font to see if we get a substitution font
         SelectObject(d->hdc, fe->hfont);
@@ -360,7 +360,7 @@ void QWin32PrintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem
                     != QString::fromWCharArray(fe->logfont.lfFaceName);
         }
     }
-
+#endif
 
     if (fallBack) {
         QPaintEngine::drawTextItem(p, textItem);
@@ -1643,10 +1643,11 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
     SetBkMode(hdc, TRANSPARENT);
 
     bool has_kerning = ti.f && ti.f->kerning();
-    QFontEngineWin *winfe = (fe->type() == QFontEngine::Win) ? static_cast<QFontEngineWin *>(fe) : 0;
-
     HFONT hfont;
     bool ttf = false;
+
+#if !defined(QT_WIN_FREETYPE)
+    QFontEngineWin *winfe = (fe->type() == QFontEngine::Win) ? reinterpret_cast<QFontEngineWin *>(fe) : 0;
 
     if (winfe) {
         hfont = winfe->hfont;
@@ -1654,6 +1655,9 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
     } else {
         hfont = (HFONT)GetStockObject(ANSI_VAR_FONT);
     }
+#else
+    hfont = (HFONT)GetStockObject(ANSI_VAR_FONT);
+#endif
 
     HGDIOBJ old_font = SelectObject(hdc, hfont);
     unsigned int options = (ttf && !convertToText) ? ETO_GLYPH_INDEX : 0;

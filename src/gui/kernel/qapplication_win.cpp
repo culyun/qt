@@ -2145,6 +2145,22 @@ extern "C" LRESULT QT_WIN_CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wPa
                     alert_widget(widget, -1);
                 }
             }
+#ifdef Q_WS_WINCE
+            // WM_ACTIVATEAPP is not supported in Windows CE,
+            // so WM_ACTIVATEAPP[FALSE] is not received when switching to the window of another app.
+            // Therefore de-activate the window (and QApplication) upon receiving WM_ACTIVATE[WA_INACTIVE],
+            // if the focus is not going to another window in this application
+            else if (QWidget::find((HWND)lParam) == 0) {
+                QApplication::setActiveWindow(0);
+                // Another application was activated while our popups are open,
+                // then close all popups.  In case some popup refuses to close,
+                // we give up after 1024 attempts (to avoid an infinite loop).
+                int maxiter = 1024;
+                QWidget *popup;
+                while ((popup=QApplication::activePopupWidget()) && maxiter--)
+                    popup->close();
+            }
+#endif // Q_WS_WINCE
 
             // Windows tries to activate a modally blocked window.
             // This happens when restoring an application after "Show Desktop"

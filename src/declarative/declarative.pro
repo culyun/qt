@@ -24,16 +24,22 @@ include(graphicsitems/graphicsitems.pri)
 include(qml/qml.pri)
 include(debugger/debugger.pri)
 
-symbian: {
+symbian:contains(QT_CONFIG, freetype) {
     TARGET.UID3=0x2001E623
     LIBS += -lefsrv -lhal
+    DEFINES *= QT_NO_FONTCONFIG
+    INCLUDEPATH += \
+        ../3rdparty/freetype/src \
+        ../3rdparty/freetype/include
+}
 
-    contains(QT_CONFIG, freetype) {
-        DEFINES += QT_NO_FONTCONFIG
-        INCLUDEPATH += \
-            ../3rdparty/freetype/src \
-            ../3rdparty/freetype/include
-    }
+win*:contains(QT_CONFIG, freetype) {
+    DEFINES *= QT_NO_FONTCONFIG
+    DEFINES -= QT_NO_FREETYPE
+    DEFINES *= QT_WIN_FREETYPE
+    INCLUDEPATH += \
+        ../3rdparty/freetype/src \
+        ../3rdparty/freetype/include
 }
 
 linux-g++-maemo:DEFINES += QDECLARATIVEVIEW_NOBACKGROUND

@@ -125,7 +125,7 @@ struct QFreetypeFace
 
 private:
     friend class QFontEngineFT;
-    friend class QScopedPointerDeleter<QFreetypeFace>;
+    friend struct QScopedPointerDeleter<QFreetypeFace>;
     QFreetypeFace() : _lock(QMutex::Recursive) {}
     ~QFreetypeFace() {}
     QAtomicInt ref;

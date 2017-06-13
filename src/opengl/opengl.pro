@@ -128,7 +128,9 @@ mac:!qpa {
 
 win* {
     contains(QT_CONFIG, freetype) {
-        DEFINES += QT_NO_FONTCONFIG
+        DEFINES *= QT_NO_FONTCONFIG
+        DEFINES -= QT_NO_FREETYPE
+        DEFINES *= QT_WIN_FREETYPE
         INCLUDEPATH += \
             ../3rdparty/freetype/src \
             ../3rdparty/freetype/include
@@ -179,7 +181,7 @@ symbian {
                qgltexturepool_p.h
 
     contains(QT_CONFIG, freetype) {
-        DEFINES += QT_NO_FONTCONFIG
+        DEFINES *= QT_NO_FONTCONFIG
         INCLUDEPATH += \
             ../3rdparty/freetype/src \
             ../3rdparty/freetype/include
