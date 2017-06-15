@@ -310,7 +310,7 @@ goto :eof
     goto :finish
   )
 
-  set BUILD_ALIAS=%QT_VERSION%-%BUILD_TARGET%-%TOOL_CHAIN%
+  set BUILD_ALIAS=qt%QT_VERSION%-%BUILD_TARGET%-%TOOL_CHAIN%
 
   :start
 
